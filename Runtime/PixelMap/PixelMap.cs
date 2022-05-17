@@ -4,6 +4,7 @@ using SoulShard.Utils;
 using SoulShard.Math;
 using Unity.Collections;
 using System;
+using System.Linq;
 
 namespace SoulShard.PixelMaps
 {
@@ -116,7 +117,7 @@ namespace SoulShard.PixelMaps
         {
             mapChangeCallback?.Invoke(positions, colors, this);
             NativeArray<Color32> n_colors = new NativeArray<Color32>(
-                _ColorUtility.ConvertColorArrToColor32Arr(colors),
+                colors.Cast<Color32>().ToArray(),
                 Allocator.TempJob
             );
             Jobs.EditJobScedule<NativeArray<Color32>, Jobs.SetPixelsJob>(positions, n_colors, this);
@@ -154,7 +155,7 @@ namespace SoulShard.PixelMaps
             Color32[] colors = new Color32[n_colors.Length];
             n_colors.CopyTo(colors);
             n_colors.Dispose();
-            return _ColorUtility.ConvertColor32ArrToColorArr(colors);
+            return colors.Cast<Color>().ToArray();
         }
         #endregion
         #region Clearers

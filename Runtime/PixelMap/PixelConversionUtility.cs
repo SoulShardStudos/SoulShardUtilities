@@ -48,7 +48,7 @@ public static class PixelConversionUtility
         List<Vector2Int> positions = new List<Vector2Int>(0);
         for (int i = 0; i < n_tex.Length; i++)
         {
-            if (_ColorUtility.ConvertColorArrToColor32Arr(clearColors).Contains(n_tex[i]))
+            if (clearColors.Cast<Color32>().Contains(n_tex[i]))
                 continue;
             positions.Add(CollectionUtility.GetPosition(i, tex2D.width));
             colors.Add(n_tex[i]);
