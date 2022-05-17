@@ -32,22 +32,14 @@ namespace SoulShard.Utils
             return @return;
         }
 
-        /// <summary>
-        /// takes in a boolean list and checks if all the values are the same
-        /// </summary>
-        /// <typeparam name="T">the type of the collection</typeparam>
-        /// <param name="collection">the collection to compare</param>
-        /// <param name="compareTo">the value to compare the collection to</param>
-        /// <returns>whether the list contains all of the same values</returns>
-        public static bool? EqualTo<T>(this IEnumerable<T> collection, T compareTo)
+        public static uint CountOccurences<T>(this IEnumerable<T> collection, T occurence)
             where T : IEquatable<T>
         {
-            if (collection.Count() == 0)
-                return null;
+            uint count = 0;
             foreach (T t in collection)
-                if (!t.Equals(compareTo))
-                    return false;
-            return true;
+                if (t.Equals(occurence))
+                    count++;
+            return count;
         }
 
         #endregion

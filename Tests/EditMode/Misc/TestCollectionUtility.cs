@@ -29,13 +29,22 @@ class TestCollectionUtility
     }
 
     [Test]
-    public void TestCollectionIsEqualToValue()
+    public void TestCollectionCountOccurences()
     {
         var @default = "HELLO!!!";
-        var same = CollectionUtility.Gen(5, @default);
-        var diff = new string[5] { @default, @default, "hello00000!!!!@#$!", @default, "GOODBYE!" };
-        Assert.True(same.EqualTo(@default));
-        Assert.False(diff.EqualTo(@default));
+        Assert.AreEqual(CollectionUtility.Gen(5, @default).CountOccurences(@default), 5);
+        Assert.AreEqual(
+            new string[5]
+            {
+                @default,
+                @default,
+                "hello00000!!!!@#$!",
+                @default,
+                "GOODBYE!"
+            }.CountOccurences(@default),
+            3
+        );
+        Assert.AreEqual(CollectionUtility.Gen(5, "nope").CountOccurences(@default), 0);
     }
 
     [Test]

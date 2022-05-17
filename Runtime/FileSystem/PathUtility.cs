@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 using SoulShard.Utils;
 
 namespace SoulShard.FileSystem
@@ -72,7 +73,7 @@ namespace SoulShard.FileSystem
         public static string GetPartOfPath(string path, int index, bool dir, char delim)
         {
             string @return = "";
-            int numberOfElements = StringUtility.GetNumberOfCharsInStr(path, delim);
+            uint numberOfElements = path.CountOccurences(delim);
             if (numberOfElements < index)
                 return null;
             int currentIndex = 0;
@@ -93,7 +94,7 @@ namespace SoulShard.FileSystem
                 }
             }
             if (!dir)
-                StringUtility.ReverseString(ref @return);
+                @return.Reverse();
             return @return;
         }
     }
