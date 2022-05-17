@@ -8,7 +8,7 @@ namespace SoulShard.Utils
     /// <summary>
     /// contains some basic functions to generate and manager collections
     /// </summary>
-    public struct CollectionUtility
+    public static class CollectionUtility
     {
         #region Other
         /// <summary>
@@ -17,12 +17,18 @@ namespace SoulShard.Utils
         /// <typeparam name="T">the component to get from every object</typeparam>
         /// <param name="toGetComponentFrom">the array to get the components from</param>
         /// <returns>the collection of monobehaviors</returns>
-        public static T[] GetComponentFromGameObjectList<T>(GameObject[] toGetComponentFrom)
-            where T : MonoBehaviour
+        public static IEnumerable<T> GetComponentFromGameObjectList<T>(
+            IEnumerable<GameObject> toGetComponentFrom
+        ) where T : Component
         {
-            T[] @return = new T[toGetComponentFrom.Length];
-            for (int i = 0; i < toGetComponentFrom.Length; i++)
-                @return[i] = toGetComponentFrom[i].GetComponent<T>();
+            int ct = toGetComponentFrom.Count();
+            T[] @return = new T[ct];
+            int i = 0;
+            foreach (GameObject g in toGetComponentFrom)
+            {
+                @return[i] = g.GetComponent<T>();
+                i++;
+            }
             return @return;
         }
 
@@ -30,50 +36,32 @@ namespace SoulShard.Utils
         /// takes in a boolean list and checks if all the values are the same
         /// </summary>
         /// <typeparam name="T">the type of the collection</typeparam>
-        /// <param name="list">the collection to compare</param>
+        /// <param name="collection">the collection to compare</param>
         /// <param name="compareTo">the value to compare the collection to</param>
         /// <returns>whether the list contains all of the same values</returns>
-        public static bool? CollectionIsEqualToValue<T>(T[] list, T compareTo)
+        public static bool? EqualTo<T>(this IEnumerable<T> collection, T compareTo)
             where T : IEquatable<T>
         {
-            if (list.Length == 0)
+            if (collection.Count() == 0)
                 return null;
-            foreach (T t in list)
+            foreach (T t in collection)
                 if (!t.Equals(compareTo))
                     return false;
             return true;
         }
+
         #endregion
         #region Collection Generation
         /// <summary>
-        /// generates a collection by inputting a collection's elements into a function and generating a new collection composed of the outputs.
-        /// </summary>
-        /// <typeparam name="_returnType">the return type of the function</typeparam>
-        /// <typeparam name="_inputType">the input type of the function</typeparam>
-        /// <param name="input">the input collection</param>
-        /// <param name="func">the function to apply to all elements of the input collection</param>
-        /// <returns>the newly generated collection</returns>
-        public static _returnType[] GenerateCollectionFromFunction<_returnType, _inputType>(
-            _inputType[] @input,
-            Func<_inputType, _returnType> func
-        )
-        {
-            _returnType[] @return = new _returnType[@input.Length];
-            for (int i = 0; i < @input.Length; i++)
-                @return[i] = func(@input[i]);
-            return @return;
-        }
-
-        /// <summary>
         /// generates a new 2d array with a default value
+        /// TODO: DEPRECATE WHEN DOTNET 6 COMES TO UNITY
         /// </summary>
         /// <typeparam name="T">the type of the collection</typeparam>
         /// <param name="xLength">the x length of the array</param>
         /// <param name="yLength">the y length of the array</param>
         /// <param name="defaultValue">the default value for the array</param>
         /// <returns>the new collection</returns>
-        public static T[,] GenerateNew2dArray<T>(int xLength, int yLength, T defaultValue)
-            where T : new()
+        public static T[,] Gen<T>(int xLength, int yLength, T defaultValue)
         {
             T[,] @return = new T[xLength, yLength];
             if (defaultValue == null)
@@ -88,18 +76,20 @@ namespace SoulShard.Utils
 
         /// <summary>
         /// generates a new array with a default value
+        /// TODO: DEPRECATE WHEN DOTNET 6 COMES TO UNITY
         /// </summary>
         /// <typeparam name="T">the type of the collection</typeparam>
         /// <param name="length">the length of the new collection</param>
         /// <param name="defaultValue">the default value of the collection</param>
         /// <returns>the new collection</returns>
-        public static T[] GenerateNewArray<T>(int length, T defaultValue)
+        public static T[] Gen<T>(int length, T defaultValue)
         {
             T[] @return = new T[length];
             for (int i = 0; i < length; i++)
                 @return[i] = defaultValue;
             return @return;
         }
+
         #endregion
         #region Index Management Methods
         /// <summary>
@@ -147,39 +137,45 @@ namespace SoulShard.Utils
         /// <typeparam name="T">the collection type</typeparam>
         /// <param name="collection">the collection to convert</param>
         /// <returns>the formatted string</returns>
-        public static string BetterCollectionToString<T>(IEnumerable<T> collection)
-        {
-            if (collection == null)
-                return null;
-            string @return = "";
-            T[] arr = collection.ToArray();
-            for (int i = 0; i < collection.Count(); i++)
-            {
-                string comma = (i + 1 != collection.Count() ? ", " : "");
-                @return += arr[i]?.ToString() + comma;
-            }
-            return @return;
-        }
-
-        /// <summary>
-        /// converts the contents of a collection to a string, in a format where you can read the collection contents
-        /// </summary>
-        /// <typeparam name="T">the collection type</typeparam>
-        /// <param name="collection">the collection to convert</param>
-        /// <returns>the formatted string</returns>
-        public static string BetterCollectionToString<T>(
-            IEnumerable<T> collection,
-            Func<T, string> stringConversion
+        public static string BetterToString<T>(
+            this IEnumerable<T> collection,
+            string delimiter = ", "
         )
         {
             if (collection == null)
                 return null;
             string @return = "";
-            T[] arr = collection.ToArray();
-            for (int i = 0; i < collection.Count(); i++)
+            int ct = collection.Count();
+            int i = 0;
+            foreach (T t in collection)
             {
-                string comma = (i + 1 != collection.Count() ? ", " : "");
-                @return += stringConversion(arr[i]) + comma;
+                @return += t?.ToString() + (i + 1 != ct ? delimiter : "");
+                i++;
+            }
+            return @return;
+        }
+
+        /// <summary>
+        /// Converts the contents of a collection to a string, in a format where you can read the collection contents.
+        /// </summary>
+        /// <typeparam name="T">the collection type</typeparam>
+        /// <param name="collection">the collection to convert</param>
+        /// <returns>the formatted string</returns>
+        public static string BetterToString<T>(
+            this IEnumerable<T> collection,
+            Func<T, string> stringConversion,
+            string delimiter = ", "
+        )
+        {
+            if (collection == null)
+                return null;
+            int ct = collection.Count();
+            string @return = "";
+            int i = 0;
+            foreach (T t in collection)
+            {
+                @return += stringConversion(t) + (i + 1 != ct ? delimiter : "");
+                i++;
             }
             return @return;
         }

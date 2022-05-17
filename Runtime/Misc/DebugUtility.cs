@@ -83,7 +83,7 @@ namespace SoulShard.Utils
                 Debug.Log(null);
                 return;
             }
-            Debug.Log(CollectionUtility.BetterCollectionToString(collection));
+            Debug.Log(collection.BetterToString());
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace SoulShard.Utils
                 Debug.Log(null);
                 return;
             }
-            Debug.Log(CollectionUtility.BetterCollectionToString(collection, stringConversion));
+            Debug.Log(collection.BetterToString(stringConversion));
         }
     }
 }

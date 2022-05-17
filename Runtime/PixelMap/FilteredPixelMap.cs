@@ -36,10 +36,7 @@ namespace SoulShard.PixelMaps
 
         public override void SetPixels(Color color, Vector2Int[] positions)
         {
-            var pruned = filter(
-                positions,
-                CollectionUtility.GenerateNewArray(positions.Length, color)
-            );
+            var pruned = filter(positions, CollectionUtility.Gen(positions.Length, color));
             base.SetPixels(pruned.Item2, pruned.Item1);
         }
     }

@@ -57,13 +57,7 @@ namespace SoulShard.Utils
         )
         {
             Texture2D @return = new Texture2D(size, size, format, mipChain);
-            @return.SetPixels(
-                0,
-                0,
-                size,
-                size,
-                CollectionUtility.GenerateNewArray(size * size, color)
-            );
+            @return.SetPixels(0, 0, size, size, CollectionUtility.Gen(size * size, color));
             @return.Apply();
             return @return;
         }

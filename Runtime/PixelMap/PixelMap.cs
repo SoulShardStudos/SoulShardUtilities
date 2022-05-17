@@ -101,7 +101,7 @@ namespace SoulShard.PixelMaps
         {
             mapChangeCallback?.Invoke(
                 positions,
-                CollectionUtility.GenerateNewArray(positions.Length, color),
+                CollectionUtility.Gen(positions.Length, color),
                 this
             );
             Jobs.EditJobScedule<Color32, Jobs.SetPixelsJobSingleColor>(positions, color, this);
