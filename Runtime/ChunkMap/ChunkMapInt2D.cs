@@ -133,21 +133,13 @@ namespace SoulShard.Utils
         /// <returns> the converted chunk positions </returns>
         public ChunkPosition[] ConvertToChunkPositionsJob(Vector2Int[] positions)
         {
-            ChunkPosition[] @return = new ChunkPosition[positions.Length];
-            Unity.Collections.NativeArray<Vector2Int> n_positions =
-                new Unity.Collections.NativeArray<Vector2Int>(
-                    positions,
-                    Unity.Collections.Allocator.TempJob
-                );
-            Unity.Collections.NativeArray<ChunkPosition> n_inners =
-                ChunkPositionJobs.StandardParallelChunkJob<
-                    ChunkPositionJobs.ChunkPositionConversionJob,
-                    Unity.Collections.NativeArray<ChunkPosition>
-                >(n_positions, chunkSizeV2I);
-            n_inners.CopyTo(@return);
-            n_inners.Dispose();
+            var n_positions = positions.ToNativeArray();
+            var n_inners = ChunkPositionJobs.StandardParallelChunkJob<
+                ChunkPositionJobs.ChunkPositionConversionJob,
+                Unity.Collections.NativeArray<ChunkPosition>
+            >(n_positions, chunkSizeV2I);
             n_positions.Dispose();
-            return @return;
+            return n_inners.DisposeCopy();
         }
         #endregion
         #endregion

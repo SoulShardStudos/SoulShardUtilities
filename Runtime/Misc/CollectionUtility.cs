@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Unity.Collections;
 
 namespace SoulShard.Utils
 {

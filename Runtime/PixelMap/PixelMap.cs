@@ -152,10 +152,7 @@ namespace SoulShard.PixelMaps
             for (int i = 0; i < n_colors.Length; i++)
                 n_colors[i] = emptyPixelColor;
             Jobs.EditJobScedule<NativeArray<Color32>, Jobs.GetPixelsJob>(positions, n_colors, this);
-            Color32[] colors = new Color32[n_colors.Length];
-            n_colors.CopyTo(colors);
-            n_colors.Dispose();
-            return colors.Cast<Color>().ToArray();
+            return n_colors.DisposeCopy().Cast<Color>().ToArray();
         }
         #endregion
         #region Clearers

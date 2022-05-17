@@ -1,7 +1,3 @@
-using Unity.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace SoulShard.Utils
 {
     /// <summary>
@@ -22,20 +18,6 @@ namespace SoulShard.Utils
             if (batchCount == 0)
                 batchCount = 1;
             return batchCount;
-        }
-
-        /// <summary>
-        /// A quicker way to add an array to a native list, as currently you cannot just add a raw array.
-        /// </summary>
-        /// <typeparam name="T">the type of the list</typeparam>
-        /// <param name="nativeList">the native list to add the collection to</param>
-        /// <param name="collection">the collection that will be added to the nativelist</param>
-        public static void AddToNativeList<T>(NativeList<T> nativeList, IEnumerable<T> collection)
-            where T : unmanaged
-        {
-            NativeArray<T> n_arr = new NativeArray<T>(collection.ToArray(), Allocator.Temp);
-            nativeList.AddRange(n_arr);
-            n_arr.Dispose();
         }
     }
 }

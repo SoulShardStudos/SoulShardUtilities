@@ -137,7 +137,6 @@ namespace SoulShard.Utils.Internal
             Vector2Int chunksize
         ) where _JobType : struct, IJobParallelFor, IChunkJob<NativeArray<Vector2Int>>
         {
-            Vector2Int[] @return = new Vector2Int[positions.Length];
             NativeArray<Vector2Int> n_positions = new NativeArray<Vector2Int>(
                 positions,
                 Allocator.TempJob
@@ -146,10 +145,8 @@ namespace SoulShard.Utils.Internal
                 _JobType,
                 NativeArray<Vector2Int>
             >(n_positions, chunksize);
-            n_inners.CopyTo(@return);
-            n_inners.Dispose();
             n_positions.Dispose();
-            return @return;
+            return n_inners.DisposeCopy();
         }
         #endregion
     }
